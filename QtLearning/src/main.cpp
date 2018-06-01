@@ -14,8 +14,7 @@ int main(int argc,char* argv[])
     splash->show();
     qApp->processEvents();
     splash->showMessage(QObject::tr("I am your father"));
-    ExtendWidnow w;
-    splash->finish(&w);
+    IconEditor w;
     w.show();
     delete splash;
     return app.exec();
