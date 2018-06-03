@@ -1,13 +1,13 @@
 #include <QtWidgets>
 #include "dialog.h"
-
+#include <QRubberBand>
 
 IconEditor::IconEditor(QWidget *parent)
           :QWidget(parent)
 {
  //   setAttribute(Qt::WA_StaticContents);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
+    zoom = 8;
     curColor = Qt::black;
     image = QImage(32, 32, QImage::Format_ARGB32);
     image.fill(qRgba(0, 0, 0, 0));
@@ -120,6 +120,13 @@ void IconEditor::mousePressEvent(QMouseEvent* event)
     {
         SetImagePixel(event->pos(), false);
     }
+    m_origin = event->pos();
+    m_rectBand = new QRubberBand(QRubberBand::Rectangle, this);
+    if(!m_rectBand)
+    {
+    }
+    m_rectBand->setGeometry(QRect(m_origin,QSize()));
+    m_rectBand->show();
 }
 
 
@@ -134,6 +141,13 @@ void IconEditor::mouseMoveEvent(QMouseEvent* event)
         SetImagePixel(event->pos(), false);
     }
 
+    m_rectBand->setGeometry(QRect(m_origin, event->pos()).normalized());
+
+}
+
+void IconEditor::mouseReleaseEvent(QMouseEvent* event)
+{
+    m_rectBand->hide();
 }
 
 void IconEditor::SetImagePixel(const QPoint& pos, bool opaque)

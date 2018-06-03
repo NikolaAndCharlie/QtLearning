@@ -5,6 +5,9 @@
 #include <QImage>
 #include <QWidget>
 
+
+class QRubberBand;
+class QPoint;
 class IconEditor:public QWidget
 {
     Q_OBJECT
@@ -28,10 +31,12 @@ private:
     QColor curColor;
     QImage image;
     int zoom;
-    
+    QRubberBand* m_rectBand;
+    QPoint m_origin;
 protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent* event);
+    void mouseReleaseEvent(QMouseEvent* event);
     void paintEvent(QPaintEvent* event);
 
 };
