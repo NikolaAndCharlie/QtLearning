@@ -1,49 +1,49 @@
-#ifndef _INCONEDITE_
-#define _INCONEDITE_
+#ifndef _THREAD_H_
+#define _THREAD_H_
 
-#include <QColor>
-#include <QImage>
-#include <QWidget>
+#include <QThread>
+#include <QDialog>
+#include <QPushButton>
+#include <QMutex>
 
-
-class QRubberBand;
-class QPoint;
-class IconEditor:public QWidget
+class Thread :public QThread
 {
-    Q_OBJECT
-    Q_PROPERTY(QColor penColor READ penColor WRITE setPenColor);
-    Q_PROPERTY(QImage iconImage READ iconImage WRITE setIconImage);
-    Q_PROPERTY(int zoomFactor READ zoomFactor WRITE setZoomFactor);
-
+  Q_OBJECT
 public:
-    IconEditor(QWidget *parent = 0);
-     
-    void setPenColor(const QColor &newColor);
-    QColor penColor() const { return curColor; }
-    void setZoomFactor(int newZoom);
-    int zoomFactor() const { return zoom; }
-    void setIconImage(const QImage& newImage);
-    QImage iconImage()  const { return image; }
-    QSize sizeHint() const;
-private:
-    void SetImagePixel(const QPoint& pos, bool opaque);
-    QRect pixelRect(int i, int j) const;
-    QColor curColor;
-    QImage image;
-    int zoom;
-    QRubberBand* m_rectBand;
-    QPoint m_origin;
-protected:
-    void mousePressEvent(QMouseEvent *event);
-    void mouseMoveEvent(QMouseEvent* event);
-    void mouseReleaseEvent(QMouseEvent* event);
-    void paintEvent(QPaintEvent* event);
+	Thread();
 
+	void setMessage(const QString &message);
+	void stop();
+protected:
+	void run();
+private:
+	QString m_messagestr;
+	volatile bool stopped;
+	QMutex mutex;
+    
 };
 
 
+class Dialog :public QDialog
+{
+	Q_OBJECT
+public:
+	Dialog();
+	~Dialog();
+protected:
+	void closeEvent(QCloseEvent* event);
+private slots:
+	void startOrStopThreadA();
+	void startOrStopThreadB();
 
 
+private:
+  Thread threadA;
+	Thread threadB;
+	QPushButton* quitButton;
+	QPushButton* threadAButton;
+	QPushButton* threadBButton;
+};
 
 
 #endif
