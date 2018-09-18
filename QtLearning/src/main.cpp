@@ -1,44 +1,37 @@
 #include <QApplication>
-#include <QSplashScreen>
-#include "dialog.h"
-#include <QFile>
-#include <QIODevice>
-#include <QDataStream>
-#include <QTextStream>
-#include <iostream>
-#include <QSettings>
+#include <QSplitter>
+#include <QTreeView>
+#include <QListView>
+#include <QFileSystemModel>
+#include <QModelIndex>
+
 
 int main(int argc,char* argv[])
 {
 	QApplication app(argc, argv);
-	QCoreApplication::setApplicationName("EIGHTAG");
-	QCoreApplication::setOrganizationName("aaaa");
-	QCoreApplication::setOrganizationDomain("simpretech.com");
-	QSettings::setDefaultFormat(QSettings::IniFormat);
-	QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::applicationDirPath());
 
+	QSplitter *splitter = new QSplitter;
 
- //// QSettings setting("M","QtLearning");
-  //QSettings::setDefaultFormat(QSettings::IniFormat);
-	//QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, QCoreApplication::applicationDirPath());
-	//QSettings setting("C:/Users/Nikola/Desktop/1.ini",QSettings::IniFormat);
-	QSettings setting;
-	setting.setValue("iiii",QVariant::fromValue(2).toInt());
-	setting.beginWriteArray("camera");
+	QFileSystemModel* model = new QFileSystemModel;
+	model->setRootPath(QDir::currentPath());
 
-	for(int i = 0;i < 8; ++i) {
-		setting.setArrayIndex(i);
-		setting.setValue("Camera",QVariant::fromValue(i).toInt());
-	}
+	QTreeView* tree = new QTreeView(splitter);
+	tree->setModel(model);
+	tree->setRootIndex(model->index(QDir::currentPath()));
 
-	setting.endArray();
-	QList<int> lists_;
-	setting.beginReadArray("camera");
-	for(int i = 0 ;i < 8 ;i++) {
-		setting.setArrayIndex(i);
-	  int aaa = setting.value("camera").toInt();
-		std::cout<<"camera::"<<i <<" id:"<<aaa<<std::endl;
-	}
+	QListView* list = new QListView(splitter);
+	list->setModel(model);
+	list->setRootIndex(model->index(QDir::currentPath()));
+
+	QModelIndex index = model->index(QDir::currentPath());
+	QString a = QDir::currentPath();
+	int rowNum = model->rowCount(index);
+	int colNum = model->columnCount(index);
+	QModelIndex index1 = model->index(0,0,index);
+	QString text = model->data(index1,Qt::DisplayRole).toString();
+	splitter->setWindowTitle("two view onto the same file system model");
+	splitter->show();
+
 
 	return app.exec();
 }
