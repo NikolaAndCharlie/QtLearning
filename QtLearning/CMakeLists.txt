@@ -15,5 +15,7 @@ set(Qt_Lib Qt5::Widgets Qt5::Core Qt5::Gui)
 file(GLOB_RECURSE SRC src/*.cpp)
 file(GLOB_RECURSE HDR src/*.h)
 
-add_executable(QtLearning ${SRC} ${HDR})
+qt5_add_resources(RC src/logo.qrc)
+
+add_executable(QtLearning ${SRC} ${HDR} ${RC})
 target_link_libraries(QtLearning ${Qt_Lib})
