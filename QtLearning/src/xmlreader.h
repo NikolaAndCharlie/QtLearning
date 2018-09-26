@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QtCharts/QChartView>
-
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QPainter>
 
 class EndingWidget : public QWidget
 {
@@ -11,12 +13,23 @@ class EndingWidget : public QWidget
 public:
 	EndingWidget();
 	~EndingWidget();
+
+	void paintEvent(QPaintEvent * event);
+	void paintImage(QString filename, int x ,int y);
 protected:
-  void resizeEvent(QResizeEvent* event);
 private:
-	QtCharts::QChartView* chartViewBar;
-	QtCharts::QChartView* chartViewPie;
-	QtCharts::QChartView* chartViewLine;
+	bool canDraw;
+	QPixmap* pix;
+	QSize imageSize;
+	QSize drawSize;
+	QPoint drawPos;
+	QLabel* image_label;
+private slots:
+ void browserClicked();
+ void SaveClicked();
+ void ScaleValueChanged(int v);
+ void HorValueChanged(int v);
+ void VerValueChanged(int v);
 
 };
 
