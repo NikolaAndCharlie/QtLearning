@@ -1,68 +1,120 @@
 #include "xmlreader.h"
-#include <QFormLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QSpacerItem>
-#include <QFrame>
+#include <QGridLayout>
+#include <QChart>
+#include <QBarSet>
+#include <QChartView>
+#include <QBarSeries>
+#include <QLineSeries>
+#include <QPieSeries>
+#include <QBarCategoryAxis>
 
+
+
+using namespace QtCharts;
 
 EndingWidget::EndingWidget()
 {
-	setWindowFlag(Qt::FramelessWindowHint);
-	setMinimumSize(200,300);
-	this->setObjectName(tr("centerwidget"));
-  this->setStyleSheet(tr("#centerwidget {border-image: url(:/images/12.png);}"));
 
-	QLabel *userName_label = new QLabel(tr("UserName: "));
-	QLabel *PassWord_label = new QLabel(tr("PassWord: "));
 
-	QLineEdit* line1 = new QLineEdit;
-	QLineEdit* line2 = new QLineEdit;
+	QBarSet* set0 = new QBarSet(tr("Jane"));
+	QBarSet* set1 = new QBarSet(tr("John"));
+	QBarSet* set2 = new QBarSet(tr("Axel"));
+	QBarSet* set3 = new QBarSet(tr("Mary"));
+	QBarSet* set4 = new QBarSet(tr("Samntha"));
 
-	QWidget* w = new QWidget;
+	*set0 << 10 << 20 << 30 << 40 << 50 << 60;
+	*set1 << 50 << 70 << 40 << 45 << 80 << 70;
+	*set2 << 30 << 50 << 80 << 13 << 80 << 50;
+	*set3 << 50 << 60 << 70 << 30 << 40 << 25;
+	*set4 << 90 << 70 << 50 << 30 << 16 << 42;
 
-	QFormLayout* label_line_layout = new QFormLayout;
-	label_line_layout->addRow(userName_label, line1);
-	label_line_layout->addRow(PassWord_label, line2);
-  w->setLayout(label_line_layout);
-	w->setObjectName(tr("fameFrame"));
-	w->setStyleSheet(tr("#fameFrame {border: 1px solid rgb(24,103,155);\
-	                                       border-radius: 15px;\
-																				 background-color:white;}"));
-//	QFrame * a_frame = new QFrame;
-////	a_frame->setObjectName(tr("fameFrame"));
-//	a_frame->setStyleSheet(tr("#fameFrame {border: 1px solid rgb(24,103,155);\
-//	                                       border-radius: 15px;\
-//																				 background-color:white;}"));
-//	a_frame = qobject_cast<QFrame*>(label_line_layout);
 
-	QPushButton* submit = new QPushButton(tr("Submit"));
-	submit->setStyleSheet(tr("QPushButton {border: 1px solid rgb(24,103,155);\
-	                                       border-radius: 15px;\
-																				 background-color: rgb(124,203,255);\
-																				 color: white;}"));
-  
-	submit->setMinimumSize(240,35);
+	QBarSeries* seriesBar = new QBarSeries();
+	seriesBar->append(set0);
+	seriesBar->append(set1);
+	seriesBar->append(set2);
+	seriesBar->append(set3);
+	seriesBar->append(set4);
 
-	QHBoxLayout* h_layout = new QHBoxLayout;
-	h_layout->addStretch();
-	h_layout->addWidget(w);
-//	h_layout->addLayout(label_line_layout);
-	h_layout->addStretch();
+	QChart *charBar = new QChart();
 
-	QHBoxLayout* h2_layout = new QHBoxLayout();
-	h2_layout->addStretch();
-	h2_layout->addWidget(submit);
-	h2_layout->addStretch();
+	charBar->addSeries(seriesBar);
+	charBar->setTitle("student  performance");
+	charBar->setAnimationOptions(QChart::SeriesAnimations);
 
-	QVBoxLayout* v1_layout = new QVBoxLayout;
-	v1_layout->addStretch();
-	v1_layout->addLayout(h_layout);
-	v1_layout->addLayout(h2_layout);
-	v1_layout->addStretch();
+	QStringList categories; 
+	categories << "Jan" << "Feb" << "Mar" << "Apr" << "May" << "Jun";
+	
+	QBarCategoryAxis* axis = new QBarCategoryAxis();
+	axis->append(categories);
+	charBar->createDefaultAxes();
+	charBar->setAxisX(axis, seriesBar);
 
-	this->setLayout(v1_layout);
+	QWidget* chart1 = new QWidget;
+
+	chartViewBar = new QChartView(charBar);
+	chartViewBar->setRenderHint(QPainter::Antialiasing);
+	chartViewBar->setParent(chart1);
+
+
+	QPieSeries* seriesPie = new QPieSeries();
+	seriesPie->append("Jane",10);
+	seriesPie->append("Joe",20);
+	seriesPie->append("Andy",30);
+	seriesPie->append("Barbara",40);
+	seriesPie->append("Janson",50);
+
+	QPieSlice* slice = seriesPie->slices().at(1);
+
+	slice->setExploded();
+	slice->setLabelVisible();
+	slice->setPen(QPen(Qt::darkGreen, 2));
+	slice->setBrush(Qt::green);
+
+	QChart * chartPie = new QChart;
+	chartPie->addSeries(seriesPie);
+
+	QWidget* chart2 = new QWidget;
+
+	chartPie->setTitle(tr("Student Performance"));
+	chartViewPie = new QChartView(chartPie);
+	chartViewPie->setRenderHint(QPainter::Antialiasing);
+	chartViewPie->setParent(chart2);
+
+
+	QLineSeries* seriesLine = new QLineSeries;
+
+	seriesLine->append(0,6);
+	seriesLine->append(2,4);
+	seriesLine->append(3,8);
+	seriesLine->append(7,4);
+	seriesLine->append(10,5);
+	seriesLine->append(11,10);
+	seriesLine->append(13,3);
+	seriesLine->append(17,6);
+	seriesLine->append(18,3);
+	seriesLine->append(20,2);
+
+	QChart* chartLine = new QChart();
+	chartLine->addSeries(seriesLine);
+	chartLine->createDefaultAxes();
+	chartLine->setTitle("Students Performance");
+
+
+	QWidget* chart3 = new QWidget;
+	chartViewLine = new QChartView(chartLine);
+	chartViewLine->setRenderHint(QPainter::Antialiasing);
+	chartViewLine->setParent(chart3);
+
+
+	QGridLayout* mainLayout = new QGridLayout;
+	mainLayout->addWidget(chart1,0,0);
+	mainLayout->addWidget(chart2,0,1);
+	mainLayout->addWidget(chart3,0,2);
+
+	this->setMinimumSize(900,700);
+	this->setLayout(mainLayout);
+
 }
 
 
@@ -71,3 +123,10 @@ EndingWidget::~EndingWidget()
 	
 }
 
+void EndingWidget::resizeEvent(QResizeEvent* event)
+{
+		QWidget::resizeEvent(event);
+		chartViewLine->resize(chartViewLine->parentWidget()->size());
+		chartViewBar->resize(chartViewBar->parentWidget()->size());
+		chartViewPie->resize(chartViewPie->parentWidget()->size());
+}
