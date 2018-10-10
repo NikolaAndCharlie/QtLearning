@@ -1,35 +1,25 @@
 #ifndef ENDING_WINDOW_H_
 #define ENDING_WINDOW_H_
 
+#include <QtWebEngineWidgets/QtWebEngineWidgets>
+#include <QtWebEngineWidgets/QWebEngineView>
+#include <QMainWindow>
 #include <QWidget>
-#include <QtCharts/QChartView>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QPainter>
-
-class EndingWidget : public QWidget
+class EndingWidget : public QMainWindow
 {
  Q_OBJECT
 public:
 	EndingWidget();
 	~EndingWidget();
 
-	void paintEvent(QPaintEvent * event);
-	void paintImage(QString filename, int x ,int y);
 protected:
+
 private:
-	bool canDraw;
-	QPixmap* pix;
-	QSize imageSize;
-	QSize drawSize;
-	QPoint drawPos;
-	QLabel* image_label;
+  QWebEngineView* webview;
+
+	void setUi();
 private slots:
- void browserClicked();
- void SaveClicked();
- void ScaleValueChanged(int v);
- void HorValueChanged(int v);
- void VerValueChanged(int v);
+
 
 };
 
